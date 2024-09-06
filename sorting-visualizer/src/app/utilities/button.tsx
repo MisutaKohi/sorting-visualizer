@@ -1,5 +1,12 @@
-export default function Button() {
+interface ButtonProps {
+  text: string; 
+}
+
+export default function Button({ text } : ButtonProps) {
+
   return (
-    <button className="custom-btn">Click Me</button>
+    <button className="custom-btn">
+      { text }
+    </button>
   );
 }

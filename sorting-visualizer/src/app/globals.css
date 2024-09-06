@@ -29,15 +29,27 @@ body {
   background-color: #F4FBF4;
   padding: 5px;
   border-radius: 5px;
+  border: none;
+  box-shadow: 2px 2px gray;
+  min-width: 80px
 }
 
 .custom-btn:hover {
   background-color: #0F1510;
   color: #F4FBF4;
+  cursor: pointer;
 }
 
 #algo-type {
+  background-color: #F4FBF4;
   text-align: center;
+  padding: 5px;
+  height: 30px;
+  box-shadow: 2px 2px gray;
+}
+
+#algo-type:hover {
+  cursor: pointer;
 }
 
 footer {

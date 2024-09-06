@@ -10,10 +10,10 @@ export default function Home() {
         </div>
       </main>
       <footer>
-        <Button />
-        <Button />
+        <Button text="Randomize" />
+        <Button text="Sort" />
         <select id="algo-type" name="options">
-          <option value="" disabled selected>Select an option</option> 
+          <option value="" disabled selected>Select an Algorithm</option> 
           <option value="option1">Bubble Sort</option>
           <option value="option2">Insertion Sort</option>
         </select>`
