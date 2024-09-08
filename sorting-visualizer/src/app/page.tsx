@@ -6,7 +6,9 @@ export default function Home() {
       <main>
         <h1 id="site-title">Sorting Visualizer</h1>
         <div className="foreground-box">
-          
+          <div className="black-accent">
+
+          </div>
         </div>
       </main>
       <footer>

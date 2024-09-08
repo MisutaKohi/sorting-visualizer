@@ -23,6 +23,7 @@ body {
   margin-left: auto;
   margin-right: auto;
   border-radius: 15px;
+  padding-top: 10px;
 }
 
 .custom-btn {
@@ -31,7 +32,7 @@ body {
   border-radius: 5px;
   border: none;
   box-shadow: 2px 2px gray;
-  min-width: 80px
+  min-width: 80px;
 }
 
 .custom-btn:hover {
@@ -57,4 +58,12 @@ footer {
   display: flex;
   justify-content: center;
   gap: 20px;
+}
+
+.black-accent {
+  border: 2px gray solid;
+  height: 90%;
+  width: 95%;
+  margin: auto;
+  margin-top: 10px;
 }
