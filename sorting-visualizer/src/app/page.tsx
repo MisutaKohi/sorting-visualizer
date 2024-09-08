@@ -30,8 +30,44 @@ export default function Home() {
   //   console.log('Updated blockSizes:', blockSizes);
   // }, [blockSizes]);
 
+  const sortingAlgos = {
+    "bubble": () => {
+      bubbleSort(blockSizes);
+    }, 
+    "insertion": () => {
+      insertionSort(blockSizes);
+    }
+  }
+
+  async function bubbleSort(array : number[]) {
+    for (let i = 0; i < array.length - 1; i++) {
+      for (let j = 0; j < array.length - i - 1; j++) {
+        if (array[j + 1] < array[j]) {
+          const temp = array[j];
+          array[j] = array[j + 1];
+          array[j + 1] = temp;
+
+          setBlockSizes([...array]);
+
+          await new Promise((resolve) => 
+            setTimeout(resolve, 75)
+          );
+        }
+      }
+    }
+    // console.log(blockSizes);
+  }
+
+  function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  function insertionSort(array : number[]) {
+
+  }
+
   function handleSort() {
-    // TO DO
+    bubbleSort(blockSizes);
   }
 
   return (
