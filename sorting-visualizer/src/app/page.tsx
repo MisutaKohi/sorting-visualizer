@@ -40,8 +40,10 @@ export default function Home() {
     /* disable button to prevent concurrent sorting operations */
     setDisableSortingBtn(true);
 
-    bubbleSort(blockSizes).finally(() => {
+    bubbleSort(blockSizes).finally(async () => {
+      await delayExecution(1500);
       setDisableSortingBtn(false); // ensures function call despite errors
+      stopSortingRef.current = true;
     });
   }
 
@@ -56,19 +58,25 @@ export default function Home() {
 
   async function bubbleSort(array : number[]) {
     for (let i = 0; i < array.length - 1; i++) {
+      let isSorted : Boolean = true;
+
       for (let j = 0; j < array.length - i - 1; j++) {
         if (stopSortingRef.current) return;
 
         if (array[j + 1] < array[j]) {
+          isSorted = false;
+
           const temp = array[j];
           array[j] = array[j + 1];
           array[j + 1] = temp;
 
           setBlockSizes([...array]);
 
-          await delayExecution(75);
+          await delayExecution(50);
         }
       }
+
+      if (isSorted) return; 
     }
   }
 

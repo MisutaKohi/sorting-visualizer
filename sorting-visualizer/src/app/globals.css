@@ -41,6 +41,12 @@ body {
   cursor: pointer;
 }
 
+.disabled-btn {
+  cursor: not-allowed !important;
+  background-color: #F4FBF4 !important;
+  color: gray !important; 
+}
+
 #algo-type {
   background-color: #F4FBF4;
   text-align: center;
@@ -88,8 +94,3 @@ li {
   margin-right: 3px; 
 }
 
-.disabled-btn {
-  cursor: not-allowed !important;
-  background-color: #F4FBF4 !important;
-  color: gray !important; 
-}
