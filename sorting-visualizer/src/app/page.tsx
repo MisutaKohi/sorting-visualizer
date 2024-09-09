@@ -2,7 +2,7 @@
 
 import Button from "./utilities/button";
 import Block from "./utilities/block";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function Home() {
   const [blockSizes, setBlockSizes] = useState<number[]>(() => {
@@ -12,6 +12,8 @@ export default function Home() {
     }
     return sizes;
   });
+
+  /* Handles Randomization of Array */
 
   function shuffleArray(array: number[]): number[] {
     const shuffledArray = [...array]; // Create a copy of the array
@@ -23,12 +25,25 @@ export default function Home() {
   }
 
   function handleShuffle() {
+    stopSortingRef.current = true; // cancels sorting execution
     setBlockSizes(prevBlockSizes => shuffleArray(prevBlockSizes));
   }
 
-  // useEffect(() => {
-  //   console.log('Updated blockSizes:', blockSizes);
-  // }, [blockSizes]);
+  /* Handles Sorting of Array */
+
+  let stopSortingRef = useRef(true);
+  const [disableSortingBtn, setDisableSortingBtn] = useState(false);
+
+  function handleSort() {
+    stopSortingRef.current = false; 
+
+    /* disable button to prevent concurrent sorting operations */
+    setDisableSortingBtn(true);
+
+    bubbleSort(blockSizes).finally(() => {
+      setDisableSortingBtn(false); // ensures function call despite errors
+    });
+  }
 
   const sortingAlgos = {
     "bubble": () => {
@@ -42,6 +57,8 @@ export default function Home() {
   async function bubbleSort(array : number[]) {
     for (let i = 0; i < array.length - 1; i++) {
       for (let j = 0; j < array.length - i - 1; j++) {
+        if (stopSortingRef.current) return;
+
         if (array[j + 1] < array[j]) {
           const temp = array[j];
           array[j] = array[j + 1];
@@ -49,25 +66,20 @@ export default function Home() {
 
           setBlockSizes([...array]);
 
-          await new Promise((resolve) => 
-            setTimeout(resolve, 75)
-          );
+          await delayExecution(75);
         }
       }
     }
-    // console.log(blockSizes);
-  }
-
-  function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   function insertionSort(array : number[]) {
 
   }
 
-  function handleSort() {
-    bubbleSort(blockSizes);
+  /* Helper functions */
+
+  async function delayExecution(ms : number) {
+    return await new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   return (
@@ -83,8 +95,15 @@ export default function Home() {
         </div>
       </main>
       <footer>
-        <Button text="Randomize" onClick={ handleShuffle }/>
-        <Button text="Sort" onClick={ handleSort }/>
+        <Button 
+          className="custom-btn" 
+          text="Randomize" 
+          onClick={ handleShuffle }/>
+        <Button 
+          className={`custom-btn ${(stopSortingRef.current) ? "" : " disabled-btn"}`} 
+          text="Sort" 
+          disabled={ disableSortingBtn} 
+          onClick={ handleSort }/>
         <select id="algo-type" name="options">
           <option value="" disabled selected>Select an Algorithm</option> 
           <option value="option1">Bubble Sort</option>

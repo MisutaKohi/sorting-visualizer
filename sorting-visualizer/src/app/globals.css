@@ -87,3 +87,9 @@ li {
   justify-content: center;
   margin-right: 3px; 
 }
+
+.disabled-btn {
+  cursor: not-allowed !important;
+  background-color: #F4FBF4 !important;
+  color: gray !important; 
+}
