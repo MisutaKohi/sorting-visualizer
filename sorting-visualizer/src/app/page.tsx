@@ -33,30 +33,38 @@ export default function Home() {
 
   let stopSortingRef = useRef(true);
   const [disableSortingBtn, setDisableSortingBtn] = useState(false);
+  let algoChoiceRef = useRef<HTMLSelectElement | null>(null);
 
-  function handleSort() {
+  const sortingAlgos : { [key: string]: () => Promise<void> } = {
+    "": async () => {
+      // no choice made
+    },
+    "bubble": async () => {
+      await bubbleSort(blockSizes);
+    }, 
+    "insertion": async () => {
+      await insertionSort(blockSizes);
+    }
+  }
+
+  async function handleSort() {
     stopSortingRef.current = false; 
 
     /* disable button to prevent concurrent sorting operations */
     setDisableSortingBtn(true);
 
-    bubbleSort(blockSizes).finally(async () => {
-      await delayExecution(1500);
-      setDisableSortingBtn(false); // ensures function call despite errors
-      stopSortingRef.current = true;
-    });
+    const selectedAlgorithm : string = algoChoiceRef.current?.value || "";
+
+    await sortingAlgos[selectedAlgorithm]();
+    
+    await delayExecution(1500);
+    setDisableSortingBtn(false); 
+    stopSortingRef.current = true;
   }
 
-  const sortingAlgos = {
-    "bubble": () => {
-      bubbleSort(blockSizes);
-    }, 
-    "insertion": () => {
-      insertionSort(blockSizes);
-    }
-  }
+  
 
-  async function bubbleSort(array : number[]) {
+  async function bubbleSort(array : number[]): Promise<void> {
     for (let i = 0; i < array.length - 1; i++) {
       let isSorted : Boolean = true;
 
@@ -112,10 +120,10 @@ export default function Home() {
           text="Sort" 
           disabled={ disableSortingBtn} 
           onClick={ handleSort }/>
-        <select id="algo-type" name="options">
+        <select id="algo-type" name="options" ref={ algoChoiceRef }>
           <option value="" disabled selected>Select an Algorithm</option> 
-          <option value="option1">Bubble Sort</option>
-          <option value="option2">Insertion Sort</option>
+          <option value="bubble">Bubble Sort</option>
+          <option value="insertion">Insertion Sort</option>
         </select>`
       </footer>
     </div>
