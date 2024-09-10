@@ -88,9 +88,28 @@ export default function Home() {
     }
   }
 
-  function insertionSort(array : number[]) {
+  async function insertionSort(array : number[]): Promise<void> {
+    for (let i = 1; i < blockSizes.length; i++) {
+      let j = i;
+      
+      while (j >= 1) {
+        if (stopSortingRef.current) return;
 
-  }
+        if (array[j] < array[j - 1]) {
+          let temp = array[j];
+          array[j] = array[j - 1];
+          array[j - 1] = temp;
+
+          setBlockSizes([...array]);
+
+          await delayExecution(50);
+        } else {
+          break;
+        }
+        j--;
+      }
+    }
+   }
 
   /* Helper functions */
 
