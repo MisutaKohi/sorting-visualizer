@@ -15,6 +15,11 @@ export default function Home() {
 
   /* Handles Randomization of Array */
 
+  function handleShuffle() {
+    stopSortingRef.current = true; // cancels sorting execution
+    setBlockSizes(prevBlockSizes => shuffleArray(prevBlockSizes));
+  }
+
   function shuffleArray(array: number[]): number[] {
     const shuffledArray = [...array]; // Create a copy of the array
     for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -22,11 +27,6 @@ export default function Home() {
       [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
     }
     return shuffledArray;
-  }
-
-  function handleShuffle() {
-    stopSortingRef.current = true; // cancels sorting execution
-    setBlockSizes(prevBlockSizes => shuffleArray(prevBlockSizes));
   }
 
   /* Handles Sorting of Array */
@@ -44,6 +44,15 @@ export default function Home() {
     }, 
     "insertion": async () => {
       await insertionSort(blockSizes);
+    },
+    "merge": async () => {
+      await mergeSort(blockSizes);
+    }, 
+    "quick": async () => {
+      await quickSort(blockSizes);
+    },
+    "heap": async () => {
+      await heapSort(blockSizes);
     }
   }
 
@@ -61,8 +70,6 @@ export default function Home() {
     setDisableSortingBtn(false); 
     stopSortingRef.current = true;
   }
-
-  
 
   async function bubbleSort(array : number[]): Promise<void> {
     for (let i = 0; i < array.length - 1; i++) {
@@ -109,7 +116,19 @@ export default function Home() {
         j--;
       }
     }
-   }
+  }
+
+  async function mergeSort(array : number[]): Promise<void> {
+    //TO DO
+  }
+
+  async function quickSort(array : number[]): Promise<void> {
+    //TO DO
+  }
+
+  async function heapSort(array : number[]): Promise<void> {
+    // TO DO
+  }
 
   /* Helper functions */
 
@@ -143,6 +162,9 @@ export default function Home() {
           <option value="" disabled selected>Select an Algorithm</option> 
           <option value="bubble">Bubble Sort</option>
           <option value="insertion">Insertion Sort</option>
+          <option value="merge">Merge Sort</option>
+          <option value="quick">Quick Sort</option>
+          <option value="heap">Heap Sort</option>
         </select>`
       </footer>
     </div>
