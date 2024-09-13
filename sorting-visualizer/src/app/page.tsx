@@ -51,7 +51,9 @@ export default function Home() {
       await mergeSort(blockSizes, startIdx, endIdx);
     }, 
     "quick": async () => {
-      await quickSort(blockSizes);
+      const startIdx = 0;
+      const endIdx = blockSizes.length - 1;
+      await quickSort(blockSizes, startIdx, endIdx);
     },
     "heap": async () => {
       await heapSort(blockSizes);
@@ -121,6 +123,7 @@ export default function Home() {
   }
 
   async function mergeSort(array : number[], startIdx : number, endIdx : number): Promise<void> {
+    if (stopSortingRef.current) return;
     if (startIdx === endIdx) return;
 
     const mid = Math.floor((startIdx + endIdx) / 2);
@@ -136,8 +139,44 @@ export default function Home() {
     setBlockSizes([...array]);
   }
 
-  async function quickSort(array : number[]): Promise<void> {
-    //TO DO
+  async function quickSort(array : number[], startIdx : number, endIdx : number): Promise<void> {
+    if (stopSortingRef.current) return;
+    if (startIdx >= endIdx) return;
+
+    const pivotElement = array[endIdx];
+    
+    let ptr1 = startIdx;
+    let ptr2 = endIdx - 1;
+
+    while (ptr1 <= ptr2) {
+      if (array[ptr1] < pivotElement) {
+        ptr1++;
+
+      } else if (array[ptr2] > pivotElement) {
+          ptr2--;
+
+      } else {
+          if (ptr1 <= ptr2) {
+            await swap(array, ptr1, ptr2);
+
+            await delayExecution(75);
+            setBlockSizes([...array]);
+
+            ptr1++;
+            ptr2--;
+          }
+      }
+    }
+
+    const pivotIdx = ptr1;
+
+    await swap(array, pivotIdx, endIdx);
+
+    await delayExecution(75);
+    setBlockSizes([...array]);
+
+    await quickSort(array, startIdx, pivotIdx - 1);
+    await quickSort(array, pivotIdx + 1, endIdx);
   }
 
   async function heapSort(array : number[]): Promise<void> {
@@ -184,6 +223,12 @@ export default function Home() {
       array[idx] = num;
       idx++;
     }
+  }
+
+  async function swap(array : any, idx1 : number, idx2 : number) : Promise<void> {
+    let temp = array[idx1];
+    array[idx1] = array[idx2];
+    array[idx2] = temp;
   }
 
   return (
