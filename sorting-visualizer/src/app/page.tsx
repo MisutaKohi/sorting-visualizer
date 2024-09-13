@@ -46,7 +46,9 @@ export default function Home() {
       await insertionSort(blockSizes);
     },
     "merge": async () => {
-      await mergeSort(blockSizes);
+      const startIdx = 0;
+      const endIdx = blockSizes.length - 1;
+      await mergeSort(blockSizes, startIdx, endIdx);
     }, 
     "quick": async () => {
       await quickSort(blockSizes);
@@ -118,8 +120,20 @@ export default function Home() {
     }
   }
 
-  async function mergeSort(array : number[]): Promise<void> {
-    //TO DO
+  async function mergeSort(array : number[], startIdx : number, endIdx : number): Promise<void> {
+    if (startIdx === endIdx) return;
+
+    const mid = Math.floor((startIdx + endIdx) / 2);
+
+    await mergeSort(array, startIdx, mid);
+    await mergeSort(array, mid + 1, endIdx);
+
+    console.log(array);
+
+    await merge(array, startIdx, mid, mid + 1, endIdx);
+
+    await delayExecution(100);
+    setBlockSizes([...array]);
   }
 
   async function quickSort(array : number[]): Promise<void> {
@@ -134,6 +148,42 @@ export default function Home() {
 
   async function delayExecution(ms : number) {
     return await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function merge(array : number[], start1 : number, end1 : number, start2 : number, end2 : number) : Promise<void> {
+    const arrCopy = [...array];
+
+    let idx = start1;
+    let num;
+
+    while (start1 <= end1 && start2 <= end2) {
+      if (arrCopy[start1] < arrCopy[start2]) {
+        num = arrCopy[start1];
+        start1++;
+      } else {
+        num = arrCopy[start2];
+        start2++;
+      }
+
+      array[idx] = num;
+      idx++;
+    }
+
+    while (start1 <= end1) {
+      num = arrCopy[start1];
+      start1++;
+
+      array[idx] = num;
+      idx++;
+    }
+
+    while (start2 <= end2) {
+      num = arrCopy[start2];
+      start2++;
+
+      array[idx] = num;
+      idx++;
+    }
   }
 
   return (
