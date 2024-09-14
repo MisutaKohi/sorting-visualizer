@@ -3,8 +3,12 @@
 import Button from "./utilities/button";
 import Block from "./utilities/block";
 import React, { useState, useEffect, useRef } from 'react';
+import { start } from "repl";
 
 export default function Home() {
+  
+  /* Creates original array of blocks to sort */
+
   const [blockSizes, setBlockSizes] = useState<number[]>(() => {
     const sizes: number[] = [];
     for (let i = 1; i < 60; i++) {
@@ -12,6 +16,14 @@ export default function Home() {
     }
     return sizes;
   });
+
+  /* Manages state of algorithm choice */
+
+  const [algoChoice, setAlgoChoice] = useState<string>("");
+
+  async function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setAlgoChoice(event.target.value);
+  }
 
   /* Handles Randomization of Array */
 
@@ -31,10 +43,9 @@ export default function Home() {
 
   /* Handles Sorting of Array */
 
-  let stopSortingRef = useRef(true);
+  let stopSortingRef = useRef(true); // used to interrupt sorting mid-process
   const [disableSortingBtn, setDisableSortingBtn] = useState(false);
-  let algoChoiceRef = useRef<HTMLSelectElement | null>(null);
-
+  
   const sortingAlgos : { [key: string]: () => Promise<void> } = {
     "": async () => {
       // no choice made
@@ -66,7 +77,7 @@ export default function Home() {
     /* disable button to prevent concurrent sorting operations */
     setDisableSortingBtn(true);
 
-    const selectedAlgorithm : string = algoChoiceRef.current?.value || "";
+    const selectedAlgorithm : string = algoChoice;
 
     await sortingAlgos[selectedAlgorithm]();
     
@@ -80,7 +91,7 @@ export default function Home() {
       let isSorted : Boolean = true;
 
       for (let j = 0; j < array.length - i - 1; j++) {
-        if (stopSortingRef.current) return;
+        if (stopSortingRef.current) return; // user has interrupted sorting
 
         if (array[j + 1] < array[j]) {
           isSorted = false;
@@ -104,7 +115,7 @@ export default function Home() {
       let j = i;
       
       while (j >= 1) {
-        if (stopSortingRef.current) return;
+        if (stopSortingRef.current) return; // user has interrupted sorting
 
         if (array[j] < array[j - 1]) {
           let temp = array[j];
@@ -112,8 +123,8 @@ export default function Home() {
           array[j - 1] = temp;
 
           setBlockSizes([...array]);
-
           await delayExecution(50);
+
         } else {
           break;
         }
@@ -123,15 +134,13 @@ export default function Home() {
   }
 
   async function mergeSort(array : number[], startIdx : number, endIdx : number): Promise<void> {
-    if (stopSortingRef.current) return;
+    if (stopSortingRef.current) return; // user has interrupted sorting
     if (startIdx === endIdx) return;
 
     const mid = Math.floor((startIdx + endIdx) / 2);
 
     await mergeSort(array, startIdx, mid);
     await mergeSort(array, mid + 1, endIdx);
-
-    console.log(array);
 
     await merge(array, startIdx, mid, mid + 1, endIdx);
 
@@ -140,7 +149,7 @@ export default function Home() {
   }
 
   async function quickSort(array : number[], startIdx : number, endIdx : number): Promise<void> {
-    if (stopSortingRef.current) return;
+    if (stopSortingRef.current) return; // user has interrupted sorting
     if (startIdx >= endIdx) return;
 
     const pivotElement = array[endIdx];
@@ -180,13 +189,32 @@ export default function Home() {
   }
 
   async function heapSort(array : number[]): Promise<void> {
-    // TO DO
+    const topOfHeapIdx = 0;
+
+    let unsortedStartIdx = 0; 
+    let sortedIdx = array.length - 1; 
+
+    while (sortedIdx > 0) {
+      await heapify(array, unsortedStartIdx, sortedIdx);
+      await swap(array, topOfHeapIdx, sortedIdx);
+
+      await delayExecution(75);
+      setBlockSizes([...array]);
+
+      sortedIdx--;
+    }
   }
 
   /* Helper functions */
 
   async function delayExecution(ms : number) {
     return await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function swap(array : any, idx1 : number, idx2 : number) : Promise<void> {
+    let temp = array[idx1];
+    array[idx1] = array[idx2];
+    array[idx2] = temp;
   }
 
   async function merge(array : number[], start1 : number, end1 : number, start2 : number, end2 : number) : Promise<void> {
@@ -225,10 +253,29 @@ export default function Home() {
     }
   }
 
-  async function swap(array : any, idx1 : number, idx2 : number) : Promise<void> {
-    let temp = array[idx1];
-    array[idx1] = array[idx2];
-    array[idx2] = temp;
+  async function heapify(array : number[], startIdx : number, endIdx : number) {
+    let currIdx = Math.floor(endIdx / 2) - 1; // smallest non-leaf node
+
+    while (currIdx >= startIdx) {
+      const leftChild = 2 * currIdx + 1;
+      const rightChild = 2 * currIdx + 2;
+
+      if (leftChild <= endIdx && array[leftChild] > array[currIdx]) {
+        await swap(array, currIdx, leftChild);
+
+        await delayExecution(75);
+        setBlockSizes([...array]);
+      }
+
+      if (rightChild <= endIdx && array[rightChild] > array[currIdx]) {
+        await swap(array, currIdx, rightChild);
+
+        await delayExecution(75);
+        setBlockSizes([...array]);
+      }
+
+      currIdx--;
+    }
   }
 
   return (
@@ -253,8 +300,8 @@ export default function Home() {
           text="Sort" 
           disabled={ disableSortingBtn} 
           onClick={ handleSort }/>
-        <select id="algo-type" name="options" ref={ algoChoiceRef }>
-          <option value="" disabled selected>Select an Algorithm</option> 
+        <select id="algo-type" name="options" onChange={ handleChange }>
+          <option value="" selected>Select an Algorithm</option> 
           <option value="bubble">Bubble Sort</option>
           <option value="insertion">Insertion Sort</option>
           <option value="merge">Merge Sort</option>
