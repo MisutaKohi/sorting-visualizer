@@ -3,7 +3,6 @@
 import Button from "./utilities/button";
 import Block from "./utilities/block";
 import React, { useState, useEffect, useRef } from 'react';
-import { start } from "repl";
 
 export default function Home() {
   
@@ -211,7 +210,7 @@ export default function Home() {
     return await new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async function swap(array : any, idx1 : number, idx2 : number) : Promise<void> {
+  async function swap(array : any[], idx1 : number, idx2 : number) : Promise<void> {
     let temp = array[idx1];
     array[idx1] = array[idx2];
     array[idx2] = temp;
