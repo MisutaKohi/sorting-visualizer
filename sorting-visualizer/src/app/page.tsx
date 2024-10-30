@@ -2,7 +2,7 @@
 
 import Button from "./utilities/button";
 import Block from "./utilities/block";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 
 export default function Home() {
   
@@ -42,7 +42,7 @@ export default function Home() {
 
   /* Handles Sorting of Array */
 
-  let stopSortingRef = useRef(true); // used to interrupt sorting mid-process
+  const stopSortingRef = useRef(true); // used to interrupt sorting mid-process
   const [disableSortingBtn, setDisableSortingBtn] = useState(false);
   
   const sortingAlgos : { [key: string]: () => Promise<void> } = {
@@ -85,9 +85,11 @@ export default function Home() {
     stopSortingRef.current = true;
   }
 
+  /* Sorting Algorithms */
+
   async function bubbleSort(array : number[]): Promise<void> {
     for (let i = 0; i < array.length - 1; i++) {
-      let isSorted : Boolean = true;
+      let isSorted : boolean = true;
 
       for (let j = 0; j < array.length - i - 1; j++) {
         if (stopSortingRef.current) return; // user has interrupted sorting
@@ -117,7 +119,7 @@ export default function Home() {
         if (stopSortingRef.current) return; // user has interrupted sorting
 
         if (array[j] < array[j - 1]) {
-          let temp = array[j];
+          const temp = array[j];
           array[j] = array[j - 1];
           array[j - 1] = temp;
 
@@ -190,7 +192,7 @@ export default function Home() {
   async function heapSort(array : number[]): Promise<void> {
     const topOfHeapIdx = 0;
 
-    let unsortedStartIdx = 0; 
+    const unsortedStartIdx = 0; 
     let sortedIdx = array.length - 1; 
 
     while (sortedIdx > 0) {
@@ -210,8 +212,8 @@ export default function Home() {
     return await new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async function swap(array : any[], idx1 : number, idx2 : number) : Promise<void> {
-    let temp = array[idx1];
+  async function swap(array : number[], idx1 : number, idx2 : number) : Promise<void> {
+    const temp = array[idx1];
     array[idx1] = array[idx2];
     array[idx2] = temp;
   }
@@ -294,11 +296,13 @@ export default function Home() {
           className="custom-btn" 
           text="Randomize" 
           onClick={ handleShuffle }/>
+
         <Button 
           className={`custom-btn ${(stopSortingRef.current) ? "" : " disabled-btn"}`} 
           text="Sort" 
           disabled={ disableSortingBtn} 
           onClick={ handleSort }/>
+          
         <select id="algo-type" name="options" onChange={ handleChange }>
           <option value="" selected>Select an Algorithm</option> 
           <option value="bubble">Bubble Sort</option>
